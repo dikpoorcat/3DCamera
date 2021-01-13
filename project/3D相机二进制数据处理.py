@@ -36,7 +36,7 @@ def dat2img(filename):
 
     # resize image
     print('Original Dimensions : ', img.shape)
-    height = 1600  # keep original height
+    height = 1560  # keep original height   1560比较合适
     width = img.shape[1]  # keep original width
     dim = (width, height)
     resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
@@ -45,24 +45,33 @@ def dat2img(filename):
     # plt.show()
 
     # 保存图片
-    cv2.imwrite("D:\\opencv\\resized.png", resized)
+    cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\resized.png', resized)
 
     return resized
 
 
 def demopreprocessing(img):
     img_original = img.copy()
-
-    # 转换为整型
-    img_uint8 = img.astype(np.uint8)
-
+    img_uint8 = img.astype(np.uint8)  # 转换为整型
     img_info = img.shape
     image_height = img_info[0]
     image_weight = img_info[1]
     mask1 = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
 
+    # 二值化处理
+    ret0, binary = cv2.threshold(img_uint8, 5, 255, cv2.THRESH_BINARY)
+    # plt.imshow(binary, cmap='gray')
+    # plt.show()
+
+    # 开闭操作
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (6, 6))
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+    # plt.imshow(binary, cmap='gray')
+    # plt.show()
+    cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\binary.png', binary)
+
     # 寻找最外面的图像轮廓 返回修改后的图像 图像的轮廓  以及它们的层次
-    contours, hierarchy = cv2.findContours(img_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     print('type(contours):', type(contours))
     print('type(contours[0]):', type(contours[0]))
@@ -133,7 +142,6 @@ def demopreprocessing(img):
     # plt.show()
 
     # 获取轮廓外mask
-    ret0, binary = cv2.threshold(img_original, 5, 255, cv2.THRESH_BINARY)  # 二值化处理
     maskOutside = ~binary.astype(np.uint8)
     # plt.imshow(maskOutside, cmap='gray')
     # plt.show()
@@ -144,12 +152,7 @@ def demopreprocessing(img):
     # plt.show()
 
     # 在img上填充颜色
-    # output = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
-    # output[:, :, 0] = img
-    # output[:, :, 1] = img
-    # output[:, :, 2] = img
     output = img.copy()
-
     output[:, :, 0][mask] = np.random.randint(0, 255)  # mask部分会随机填充颜色
     output[:, :, 1][mask] = np.random.randint(0, 255)  # mask部分会随机填充颜色
     output[:, :, 2][mask] = np.random.randint(0, 255)  # mask部分会随机填充颜色
@@ -161,10 +164,10 @@ def demopreprocessing(img):
 
     cv2.waitKey()
     cv2.destroyAllWindows()
-    cv2.imwrite(r'D:\opencv\@output1111111.png', output)
+    cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\@output.png', output)
 
 
 if __name__ == '__main__':
-    img = dat2img(r'D:\oreo\photo\RulerXR 330\0.dat')
+    img = dat2img(r'H:\GitHub\3DCamera\docs\data\2.dat')
     demopreprocessing(img)
     print('完成')
