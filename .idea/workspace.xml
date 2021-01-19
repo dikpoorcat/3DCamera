@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/photos/@output.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/photos/@output.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/photos/binary.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/photos/binary.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/photos/contours.png" beforeDir="false" afterPath="$PROJECT_DIR$/docs/photos/contours.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/3D相机二进制数据处理.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/3D相机二进制数据处理.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/project/test.py" afterDir="false" />
     </list>
@@ -30,6 +31,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />

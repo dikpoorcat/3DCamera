@@ -56,7 +56,7 @@ def dat2img(filename):
     return resized, img_height
 
 
-def demopreprocessing(img, img_height):
+def dimensionMeasurement(img, img_height):
     img_original = img.copy()
     img_uint8 = img.astype(np.uint8)  # 转换为整型
     img_info = img.shape
@@ -78,9 +78,8 @@ def demopreprocessing(img, img_height):
 
     # 寻找最外面的图像轮廓 返回修改后的图像 图像的轮廓  以及它们的层次
     contours, hierarchy = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    print('type(contours):', type(contours))
-    print('type(contours[0]):', type(contours[0]))
+    # print('type(contours):', type(contours))
+    # print('type(contours[0]):', type(contours[0]))
     print('len(contours):', len(contours))
 
     # 转换为RGB图
@@ -185,15 +184,15 @@ def demopreprocessing(img, img_height):
     cv2.waitKey()
     cv2.destroyAllWindows()
     cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\@output.png', output)
+    print('尺寸检测完成。')
 
 
-def pattern(img):
+def patternMeasurement(img):
     img_original = img.copy()
     img_uint8 = img.astype(np.uint8)  # 转换为整型
     img_info = img.shape
     image_height = img_info[0]
     image_weight = img_info[1]
-    # mask1 = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
 
     # 二值化处理:自适应，阈值取相邻区域的平均值
     adaptive1 = cv2.adaptiveThreshold(img_uint8, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
@@ -219,23 +218,24 @@ def pattern(img):
 
     # 转换为RGB图
     img = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
-    img[:, :, 0] = adaptive1
-    img[:, :, 1] = adaptive1
-    img[:, :, 2] = adaptive1
+    img[:, :, 0] = img_uint8
+    img[:, :, 1] = img_uint8
+    img[:, :, 2] = img_uint8
     # plt.imshow(img)
     # plt.show()
 
     # 绘制轮廓
     contours, hierarchy = cv2.findContours(adaptive1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(img, contours, -1, (0, 0, 255), 1)
-    print(len(contours))
+    print('len(contours):', len(contours))
     cv2.imshow("img-contours", img)
     cv2.waitKey(0)
     cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\contours.png', img)
+    print('图案检测完成。')
 
 
 if __name__ == '__main__':
     img, img_height = dat2img(r'H:\GitHub\3DCamera\docs\data\0.dat')
-    # demopreprocessing(img, img_height)
-    pattern(img)
-    print('完成')
+    dimensionMeasurement(img, img_height)
+    patternMeasurement(img)
+    print('程序运行结束。')
