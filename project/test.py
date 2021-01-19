@@ -187,7 +187,55 @@ def demopreprocessing(img, img_height):
     cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\@output.png', output)
 
 
+def pattern(img):
+    img_original = img.copy()
+    img_uint8 = img.astype(np.uint8)  # 转换为整型
+    img_info = img.shape
+    image_height = img_info[0]
+    image_weight = img_info[1]
+    # mask1 = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
+
+    # 二值化处理:自适应，阈值取相邻区域的平均值
+    adaptive1 = cv2.adaptiveThreshold(img_uint8, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+    # cv2.imshow('adaptive1', adaptive1)
+    # cv2.waitKey(0)
+    # plt.imshow(adaptive1, cmap='gray')
+    # plt.show()
+
+    # floodfill背景
+    seedPoint = (0, 0)
+    newVal = 0
+    loDiff = 15
+    upDiff = 55
+    mask = np.zeros([image_height + 2, image_weight + 2], np.uint8)  # 新建图像矩阵  +2是官方函数要求
+    cv2.floodFill(adaptive1, mask, seedPoint, newVal, loDiff, upDiff, cv2.FLOODFILL_FIXED_RANGE)
+
+    # 开操作：去除白噪点
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (4, 4))
+    adaptive1 = cv2.morphologyEx(adaptive1, cv2.MORPH_OPEN, kernel)
+    # plt.imshow(binary, cmap='gray')
+    # plt.show()
+    cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\adaptive1.png', adaptive1)
+
+    # 转换为RGB图
+    img = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
+    img[:, :, 0] = adaptive1
+    img[:, :, 1] = adaptive1
+    img[:, :, 2] = adaptive1
+    # plt.imshow(img)
+    # plt.show()
+
+    # 绘制轮廓
+    contours, hierarchy = cv2.findContours(adaptive1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cv2.drawContours(img, contours, -1, (0, 0, 255), 1)
+    print(len(contours))
+    cv2.imshow("img-contours", img)
+    cv2.waitKey(0)
+    cv2.imwrite(r'H:\GitHub\3DCamera\docs\photos\contours.png', img)
+
+
 if __name__ == '__main__':
     img, img_height = dat2img(r'H:\GitHub\3DCamera\docs\data\0.dat')
-    demopreprocessing(img, img_height)
+    # demopreprocessing(img, img_height)
+    pattern(img)
     print('完成')
